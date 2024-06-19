@@ -1,2 +1,5 @@
 /data
 .env
+notebooks/testing.ipynb
+/datashader-examples
+src/__pycache__
