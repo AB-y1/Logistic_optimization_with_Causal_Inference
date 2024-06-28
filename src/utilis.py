@@ -77,3 +77,63 @@ def plot_column_vs_column(df, x_col, y_col, title=None, x_label=None, y_label=No
     ax.set_ylabel(y_label)
     
     plt.show()
+
+def rm_outliers_using_IQR(col_name, df):
+    """
+    Removes outliers from a dataframe column using the IQR method.
+    
+    Args:
+        col_name (str): The name of the column to apply the IQR method on.
+        df (pandas.DataFrame): The dataframe containing the column.
+        
+    Returns:
+        pandas.DataFrame: The dataframe with outliers removed.
+    """
+    Q1 = df[col_name].quantile(0.25)
+    Q3 = df[col_name].quantile(0.75)
+    
+    IQR = Q3 - Q1
+    
+    lower_limit = Q1 - 1.5 * IQR
+    upper_limit = Q3 + 1.5 * IQR
+    
+    df_cleaned = df[(df[col_name] >= lower_limit) & (df[col_name] <= upper_limit)]
+
+    return df_cleaned
+
+
+
+
+def plot_histogram(df, x_col, y_col):
+    """
+    Plots a histogram to visualize the relationship between two columns in a Pandas DataFrame.
+
+    Parameters:
+    df (pandas.DataFrame): The input DataFrame.
+    x_col (str): The name of the column to be plotted on the x-axis.
+    y_col (str): The name of the column to be plotted on the y-axis.
+    """
+    plt.figure(figsize=(12, 6))
+    sns.histplot(data=df, x=x_col, y=y_col, kde=True, bins=20)
+    plt.title(f"Histogram of {x_col} vs {y_col}")
+    plt.xlabel(x_col)
+    plt.ylabel(y_col)
+    plt.show()
+
+
+def calculate_speed(df, distance_col, duration_col):
+    """
+    calculate the speed by dividing the trip distance on the trip duration
+
+    Parameters:
+    df (pandas.DataFrame): The input DataFrame.
+    distance_col (float): The name of the distance column.
+    duration_col (float): The name of the duration column.
+
+    """
+    # Calculate the speed per hour and handle division by zero
+    df['speed_km/h'] = np.where(df[duration_col] > 0, 
+                                df[distance_col] / (df[duration_col]/60), 
+                                0)
+
+    return df['speed_km/h']
